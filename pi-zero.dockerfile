@@ -1,4 +1,4 @@
-FROM arm32v6/debian:bullseye
+FROM debian:bullseye
 
 ENV DEBIAN_FRONTEND=noninteractive
 
