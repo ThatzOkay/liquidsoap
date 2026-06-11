@@ -21,17 +21,15 @@ RUN apt-get update && apt-get install -y \
     libogg-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# ===== enforce ARMv6 safety =====
+# ===== ARMv6 safety flags (IMPORTANT) =====
 ENV CFLAGS="-march=armv6 -mfpu=vfp -mfloat-abi=hard"
 ENV OCAMLPARAM="safe-string=1"
 
-# ===== OCaml environment =====
-RUN opam init --disable-sandboxing -y
-RUN opam switch create 4.14.0
-RUN eval $(opam env)
-
-# ===== install Liquidsoap =====
-RUN opam install liquidsoap -y
+# ===== OCaml + Liquidsoap =====
+RUN opam init --disable-sandboxing -y && \
+    opam switch create 4.14.0 && \
+    eval $(opam env) && \
+    opam install liquidsoap -y
 
 WORKDIR /app
 COPY stream.liq /app/stream.liq
