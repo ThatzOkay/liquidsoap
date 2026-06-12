@@ -1,4 +1,4 @@
-FROM thatzokay/rpi-bookworm-base:latest
+FROM thatzokay/rpi-bookworm-base:latest AS build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -50,3 +50,7 @@ RUN opam init --disable-sandboxing -y && \
       liquidsoap
 
 WORKDIR /app
+
+# ===== export just the liquidsoap binary =====
+FROM scratch AS export
+COPY --from=build /root/.opam/4.14.0/bin/liquidsoap /liquidsoap
