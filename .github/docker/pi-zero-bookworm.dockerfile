@@ -14,18 +14,9 @@ RUN apt-get update && apt-get install -y \
     libasound2-dev \
     libfftw3-dev \
     libssl-dev \
-    libmad0-dev \
     libmp3lame-dev \
-    libvorbis-dev \
+    libflac-dev \
     libogg-dev \
-    libavcodec-dev \
-    libavdevice-dev \
-    libavfilter-dev \
-    libavformat-dev \
-    libavutil-dev \
-    libswresample-dev \
-    libswscale-dev \
-    libtag1-dev \
     zlib1g-dev \
     libcurl4-gnutls-dev \
     libpcre2-dev \
@@ -37,15 +28,15 @@ ENV CXXFLAGS="-marm -march=armv6 -mfpu=vfp -mfloat-abi=hard -fpermissive"
 ENV OCAMLPARAM="safe-string=1,_"
 
 # ===== OCaml + Liquidsoap =====
+# ffmpeg is omitted: it segfaults under QEMU user-mode emulation (likely a
+# NEON/VFP codec-init path unsupported by QEMU's armv6 TCG), and isn't
+# needed for FLAC playback. flac covers decoding, lame covers MP3 output.
 RUN opam init --disable-sandboxing -y && \
     opam switch create 4.14.0 ocaml-base-compiler.4.14.0 && \
     eval $(opam env) && \
     opam update && \
     opam install -y \
-      ffmpeg \
-      taglib \
-      mad \
-      vorbis \
+      flac \
       lame \
       liquidsoap
 

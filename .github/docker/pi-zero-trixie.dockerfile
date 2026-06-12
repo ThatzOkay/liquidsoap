@@ -14,17 +14,9 @@ RUN apt-get update && apt-get install -y \
     libasound2-dev \
     libfftw3-dev \
     libssl-dev \
-    libmad0-dev \
     libmp3lame-dev \
-    libvorbis-dev \
+    libflac-dev \
     libogg-dev \
-    libavcodec-dev \
-    libavdevice-dev \
-    libavfilter-dev \
-    libavformat-dev \
-    libavutil-dev \
-    libswresample-dev \
-    libswscale-dev \
     zlib1g-dev \
     libcurl4-gnutls-dev \
     libpcre3-dev \
@@ -36,18 +28,17 @@ ENV CXXFLAGS="-marm -march=armv6 -mfpu=vfp -mfloat-abi=hard"
 ENV OCAMLPARAM="safe-string=1,_"
 
 # ===== OCaml + Liquidsoap =====
-# taglib.0.3.10's C++ stubs depend on taglib1 APIs (TagLib::uint,
-# FileRef::create) that were removed in the taglib2 headers shipped in
-# trixie, and there is no taglib2-compatible ocaml-taglib release.
-# Metadata is still available via the ffmpeg decoder, so taglib is dropped.
+# ffmpeg/taglib/mad/vorbis are omitted: ffmpeg segfaults under QEMU
+# user-mode emulation (likely a NEON/VFP codec-init path unsupported by
+# QEMU's armv6 TCG) and taglib.0.3.10's C++ stubs depend on taglib1 APIs
+# removed in trixie's taglib2 headers. flac covers FLAC decoding and lame
+# covers MP3 output, which is all that's needed for FLAC playback.
 RUN opam init --disable-sandboxing -y && \
     opam switch create 4.14.0 ocaml-base-compiler.4.14.0 && \
     eval $(opam env) && \
     opam update && \
     opam install -y \
-      ffmpeg \
-      mad \
-      vorbis \
+      flac \
       lame \
       liquidsoap
 
