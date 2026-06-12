@@ -22,7 +22,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm/v6 \
-            -f pi-zero-trixie.dockerfile \
+            -f .github/docker/pi-zero-trixie.dockerfile \
             -t liquidsoap-pi-zero \
             --output type=tar,dest=build-pi-zero.tar \
             .
